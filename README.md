@@ -21,7 +21,6 @@ Each torrent has an infrastructure node called a ***tracker***.
 When a peer joins a torrent, it registers itself with the tracker and periodically informs the tracker that it is still in the torrent. 
 In this manner, the tracker keeps track of the peers that are participating in the torrent.
 
-For deeper intuition to how BitTorrent works, please refer to [`docs/Computer_Networking_A_top_Down_Approach.pdf`](https://github.com/mohammadhashemii/BitTorrent-Python/Computer_Networking_A_top_Down_Approach.pdf).
 
 ## Installation
 Clone the repository on your local system by running the commands below in terminal.
@@ -54,7 +53,7 @@ Excellent! Now the peers are running in the torrent. But there are a lot to do. 
 each node can be in two modes. In other words, there are two functionalities for each node:
 - **send (upload):** At any given time, a node *i* may want to upload a file in torrent for a neighboring peer.
   Firstly, the node *i* tells the tracker that it has this file on his system and want to be in a state of waiting other peers request for that specific file
-  (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/docs)).
+  (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs)).
   A node can enter this mode by inputting like this:
   ```
   torrent -setMode send <filename>
@@ -64,7 +63,7 @@ each node can be in two modes. In other words, there are two functionalities for
 Thus, the tracker search that file in the torrent and sort the neighbors which own this file based on their upload frequency
   list, the more a node uploads, the more chance it has for being selected. Then a fixed number of neighboring peers are selected 
   for node *i* for later to request that file from them. Next, node *i* request that file from those neighboring peers, and 
-  conduct a UDP connection for getting a chunk of file from that peer. (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/docs))
+  conduct a UDP connection for getting a chunk of file from that peer. (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs))
   ```
   torrent -setMode download <filename>
   ```
@@ -76,7 +75,8 @@ This mechanism is described in the project report.
   torrent -setMode exit
   ```
 ## Configurations
-All the parameters and configs which can be modified exist in `configs.py`. There is a JSON-like variable which is as follows:
+All the parameters and configs which can be modified exist in `configs.py`. There is a JSON-like variable which is as follows. 
+The usages of these settings and configs are fully described in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs).
 ```json
 {
     "directory": {
@@ -103,4 +103,8 @@ All the parameters and configs which can be modified exist in `configs.py`. Ther
     }
 }
 ```
-The usages of these settings and configs are fully described in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/docs).
+
+## More details
+There is a full description of this project in The usages of these settings and configs are fully described in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs).
+All the details of how each functions work and how we integrate different parts for creating a BitTorrent can be found there.
+Additionally, the source code is fully documented and self-explainable. In case there is still any question, just create an issue. 
