@@ -11,6 +11,11 @@ Table of contents
    * [Proposed Approach](#proposed-approach)
       * [Peers](#peers)
       * [Tracker](#tracker)
+   * [Implementation Details](#implementation-details)
+      * [`node.py`](#node_py)
+      * [`tracker.py`](#node_py)
+      * [`messages/`](#messages)
+         * [`messages/`](#messages)
 
 <!--te-->
 
@@ -36,9 +41,101 @@ file to it. The question is that how does it know to send an exact chunk of a fi
 #### 2. Download
 Downloading a file has two main steps. First step which is known as *search* step, we must inform the tracker that we *NEED*s
 a specific file. The tracker after some processing (which is described in the next section), introduce some fixed-number of
-peers which it can request that file from. Assume that we send downloading request to *N* peering nodes for getting a file with size of *S*
-Each peering node, sends $\frac{S}{N}$ bytes of that file to the source peer in parallel.
+peers which it can request that file from. Assume that we send downloading request to ***N*** peering nodes for getting a file with size of ***S***
+Each peering node, sends ***S/N*** bytes of that file to the source peer in parallel.
 After gathering all the chunks of the file, they must be re-assembled and be saved in the local directory of that node.
 
 ### Tracker
+As we mentioned earlier, torrent has only a tracker. It manages the torrent and has general information of the peers.
+This information contains:
+1. Peers' files
+2. The address (IP and port number) of each peer in torrent
+
+Tracker database is updated periodically by peers. In fact each node, informs the torrent its state via a message periodically,
+and the tracker updates its database in a pooling manner. If a peer does not informs the tracker for one cycle, it means
+it has left the torrent and its information in the database must be deleted.
+As we discussed, each peer may send different messages to the tracker. These messages can be categorized as follows:
+
+
+| Mode | Description |
+|--|--|
+|*REGISTER*| Tells the tracker that it is in the torrent. |
+|*OWN*| Tells the tracker that it is now in sending mode for a specific file. |
+|*NEED*| Tells the torrent that it needs a file, so the file must be searched in the torrent. |
+|*UPDATE*| Tells the tracker that it's upload frequency rate must be incremented. |
+|*EXIT*| Tells the tracker that it left the torrent. |
+
+We briefly explain what the tracker does when it receives these messages:
+
+**1. REGISTER:**
+The tracker receives this type of message in two conditions. First when a node enters the torrent. By this way, the node informs the tracker that it is in the torrent. Second, every ***T*** seconds a node informs the tracker that is still in the torrent.
+
+**2. OWN:**
+When a peer enters the SEND mode, it sends this message to the tracker. Then, the tracker updates its database of files in torrent.
+
+**3. NEED:**
+Obviously, when a peer needs a file, it informs the tracker that it needs file ***f***. The tracker searches the torrent and sort the owners of that file based on a clever trading algorithm. The basic idea is that the tracker gives priority to the peers that are currently supplying files **at the highest rate**. 
+
+**4. UPDATE:**
+When a file has been sent by a peer to some other node, its uploading frequency rate must be incremented. This is done by the tracker.
+
+**5. EXIT:**
+When a peer exits the torrent, all the information which is related to this peer must be deleted from the tracker database.
+
+
 How these steps work and how they are implemented are explained in the following sections.
+
+## Implementation Details:
+Before you read this part, it must be noted that we tried to make the codes self-explainable by adding appropriate documentations and comments. But here we describe the general purpose of implementing functions in each file.
+
+### `node.py`
+There is a class named Node in `node.py` which has these fields:
+
+| Field | Type | Description |
+|--|--|--|
+|`node_id`|`int`|A unique ID of the node|
+|`rcv_socket`|`socket.socket`|A socket for receiving messages|
+|`send_socket`|`socket.socket`|A socket for sending messages|
+|`files`|`list`|A list of files which the node owns|
+|`is_in_send_mode`|`bool`|a boolean variable which indicates that whether the node is in send mode|
+|`downloaded_files`|`dict`|A dictionary with filename as keys and a list of file owners which the node takes the file from|
+
+By running the `node.py`, the script calls `run()`. The following things are then performs:
+1. Creating an instance of `Node` class as a new node.
+2. Informing the tracker that it enters the torrent.
+3. Creates a thread which works as a timer to sends a message to the tracker to inform its state to it.
+4. Depending on what command the user inputs, it calls different functions which we will cover them now.
+
+The implementation of `run()` is as follows:
+```python
+def run(args):
+    node = Node(node_id=args.node_id,
+                rcv_port=generate_random_port(),
+                send_port=generate_random_port())
+    log_content = f"***************** Node program started just right now! *****************"
+    log(node_id=node.node_id, content=log_content)
+    node.enter_torrent()
+
+    # We create a thread to periodically informs the tracker to tell it is still in the torrent.
+    timer_thread = Thread(target=node.inform_tracker_periodically, args=(config.constants.NODE_TIME_INTERVAL,))
+    timer_thread.setDaemon(True)
+    timer_thread.start()
+
+    print("ENTER YOUR COMMAND!")
+    while True:
+        command = input()
+        mode, filename = parse_command(command)
+
+        #################### send mode ####################
+        if mode == 'send':
+            node.set_send_mode(filename=filename)
+        #################### download mode ####################
+        elif mode == 'download':
+            t = Thread(target=node.set_download_mode, args=(filename,))
+            t.setDaemon(True)
+            t.start()
+        #################### exit mode ####################
+        elif mode == 'exit':
+            node.exit_torrent()
+            exit(0)
+```
