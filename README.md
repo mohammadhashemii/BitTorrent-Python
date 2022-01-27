@@ -28,6 +28,10 @@ Table of contents
 
 ## Introduction to BitTorrent
 
+<p align="center">
+  <img src="https://github.com/mohammadhashemii/BitTorrent-Python/blob/main/docs/bittorrent.jpg" height="200">	
+</p>
+
 Before you read this section, it must be noted that there is a complete and well-explained introduction to BitTorrent protocol
 in the reference book [Computer Networking: A top-Down Approach](https://www.amazon.com/Computer-Networking-Top-Down-Approach-6th/dp/0132856204) which all intuition behind this source were inspired by materials in this book.
 I also put the three pages of this book which is describing BitTorrent in [`docs/Computer_Networking_A_top_Down_Approach.pdf`](https://github.com/mohammadhashemii/BitTorrent-Python/Computer_Networking_A_top_Down_Approach.pdf).
@@ -74,8 +78,7 @@ As you can see, it takes an ID of the node you want to be created. For simplicit
 Excellent! Now the peers are running in the torrent. But there are a lot to do. As it stated in the course project description,
 each node can be in two modes. In other words, there are two functionalities for each node:
 - **send (upload):** At any given time, a node *i* may want to upload a file in torrent for a neighboring peer.
-  Firstly, the node *i* tells the tracker that it has this file on his system and want to be in a state of waiting other peers request for that specific file
-  (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs)).
+  Firstly, the node *i* tells the tracker that it has this file on his system and want to be in a state of waiting other peers request for that specific file.
   A node can enter this mode by inputting like this:
   ```
   torrent -setMode send <filename>
@@ -85,7 +88,7 @@ each node can be in two modes. In other words, there are two functionalities for
 Thus, the tracker search that file in the torrent and sort the neighbors which own this file based on their upload frequency
   list, the more a node uploads, the more chance it has for being selected. Then a fixed number of neighboring peers are selected 
   for node *i* for later to request that file from them. Next, node *i* request that file from those neighboring peers, and 
-  conduct a UDP connection for getting a chunk of file from that peer. (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs))
+  conduct a UDP connection for getting a chunk of file from that peer.
   ```
   torrent -setMode download <filename>
   ```
@@ -97,9 +100,13 @@ This mechanism is described in the project report.
   torrent -setMode exit
   ```
 
+  Each node and also the tracker has an individual log file in `logs/` directory which all the events in the torrent which is related to that node or the tracker will be written in.
+
+  Also, you can add any files in each node local directory that be participated in the torrent. This can be found in `node_files/`.
+
 ## Configurations
 All the parameters and configs which can be modified exist in `configs.py`. There is a JSON-like variable which is as follows. 
-The usages of these settings and configs are fully described in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs).
+
 ```json
 {
     "directory": {
