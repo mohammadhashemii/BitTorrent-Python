@@ -139,3 +139,66 @@ def run(args):
             node.exit_torrent()
             exit(0)
 ```
+
+Now we describe the purpose of each function. We tried these explanations be brief but helpful.
+
+
+#### **Send mode functions:**
+```python  
+def set_send_mode(self, filename: str) ->  None:
+``` 
+
+1. Send a message(`Node2Tracker` message) to the tacker to tells it that it has the file with name `filename` and is ready to listen to other peers requests.
+2. Create a thread for listening to neighboring peers' requests. The thread calls `listen()` function.
+
+```python  
+def listen(self) ->  None:
+``` 
+
+1. It has a infinit loop for waiting for other peers' messages.
+2. Just after it receives a message, it calls `handle_requests()`.
+
+```python  
+def handle_requests(self, msg: dict, addr: tuple) -> None:
+```
+
+1. The messages from peers can be categorized to groups. First the one which are asking for the size of a file. For this, we call `tell_file_size()` to calculate the size of the file.
+2. In the second group, the nodes is asked for sending a chunk of a file. In this condition, it calls `send_chunk()`.
+
+```python  
+def tell_file_size(self, msg: dict, addr: tuple) -> None:
+```
+
+1. This function is simple. It calculates the file using `os.stat(file_path).stsize`.
+2. Then we send the result by sending a message of type `None2Node`.
+
+```python  
+def send_chunk(self, filename: str, rng: tuple, dest_node_id: int, dest_port: int) -> None:
+```
+
+This is a quiet important function. As we said, file chunks must be sent piece by pieces(Due to the limited MTU of UDP protocol).
+1. Thus the chunk is splitted to multiple pieces to be transfarabale by calling `split_file_to_chunks()`. It returns a list of pieces.
+2. Now we iterate the pieces and send them to the neighboring peer withing a UDP segment. The piece is sent within a message of type `ChunkSharing`.
+
+```python  
+def split_file_to_chunks(self, file_path: str, rng: tuple) -> list:
+```
+
+1. This function takes the range of the file which has to be splitted to pieces of fixed-size (It this size can be modified in the `configs.py`). This is done by `mmap.mmap()` which is a python built-in function.
+2. Then it returns the result as a list of chunk pieces.
+
+```python  
+def send_segment(self, sock: socket.socket, data: bytes, addr: tuple) -> None:
+```
+
+All the messages which are transferring among peers and tracker uses this function to be sent. It creates a `UDPSegment` instance and be sent with `socket.socket` functionalities.
+
+#### **Download mode functions:**
+
+```python  
+def set_download_mode(self, filename: str) -> None:
+```
+
+1. It first check if the node has already owned this file or not. If yes, it returns.
+2. If No, if calls `search_torrent()` to ask the tracker about the file owners.
+3. After getting the result from the tracker, it calls `split_file_owners()` to split the file to equal-sized chunks.
