@@ -63,6 +63,8 @@ class Node:
                                range=rng,
                                idx=idx,
                                chunk=p)
+            log_content = f"The {idx}/{len(chunk_pieces)} has been sent!"
+            log(node_id=self.node_id, content=log_content)
             self.send_segment(sock=temp_sock,
                               data=Message.encode(msg),
                               addr=("localhost", dest_port))

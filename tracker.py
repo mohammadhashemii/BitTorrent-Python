@@ -86,22 +86,22 @@ class Tracker:
 
     def check_nodes_periodically(self, interval: int):
         global next_call
-        alive_nodes_ids = []
-        dead_nodes_ids = []
+        alive_nodes_ids = set()
+        dead_nodes_ids = set()
         try:
             for node, has_informed in self.has_informed_tracker.items():
                 node_id, node_addr = node[0], node[1]
                 if has_informed: # it means the node has informed the tracker that is still in the torrent
                     self.has_informed_tracker[node] = False
-                    alive_nodes_ids.append(node_id)
+                    alive_nodes_ids.add(node_id)
                 else:
-                    dead_nodes_ids.append(node_id)
+                    dead_nodes_ids.add(node_id)
                     self.remove_node(node_id=node_id, addr=node_addr)
         except RuntimeError: # the dictionary size maybe changed during iteration, so we check nodes in the next time step
             pass
 
         if not (len(alive_nodes_ids) == 0 and len(dead_nodes_ids) == 0):
-            log_content = f"Node(s) {alive_nodes_ids} is in the torrent and node(s){dead_nodes_ids} have left."
+            log_content = f"Node(s) {list(alive_nodes_ids)} is in the torrent and node(s){list(dead_nodes_ids)} have left."
             log(node_id=0, content=log_content, is_tracker=True)
 
         datetime.now()
