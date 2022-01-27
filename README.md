@@ -43,7 +43,7 @@ $ python3 tracker.py
    (Note that each of them must be run in a separate window of your terminal if you are running this project in a single local computer)
 
 ```
-![img.png](img.png)$ python3 node.py -node_id 1
+$ python3 node.py -node_id 1
 # in another tab of terminal
 $ python3 node.py -node_id 2
 ```
@@ -54,7 +54,7 @@ Excellent! Now the peers are running in the torrent. But there are a lot to do. 
 each node can be in two modes. In other words, there are two functionalities for each node:
 - **send (upload):** At any given time, a node *i* may want to upload a file in torrent for a neighboring peer.
   Firstly, the node *i* tells the tracker that it has this file on his system and want to be in a state of waiting other peers request for that specific file
-  (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python)).
+  (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/docs)).
   A node can enter this mode by inputting like this:
   ```
   torrent -setMode send <filename>
@@ -64,7 +64,7 @@ each node can be in two modes. In other words, there are two functionalities for
 Thus, the tracker search that file in the torrent and sort the neighbors which own this file based on their upload frequency
   list, the more a node uploads, the more chance it has for being selected. Then a fixed number of neighboring peers are selected 
   for node *i* for later to request that file from them. Next, node *i* request that file from those neighboring peers, and 
-  conduct a UDP connection for getting a chunk of file from that peer. (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python))
+  conduct a UDP connection for getting a chunk of file from that peer. (More details are explained in the project report which is in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/docs))
   ```
   torrent -setMode download <filename>
   ```
@@ -76,7 +76,7 @@ This mechanism is described in the project report.
   torrent -setMode exit
   ```
 ## Configurations
-All the parameters and configs which can be modified exists in `configs.py`. There is JSON-like variable which is as follows:
+All the parameters and configs which can be modified exist in `configs.py`. There is a JSON-like variable which is as follows:
 ```json
 {
     "directory": {
@@ -85,11 +85,11 @@ All the parameters and configs which can be modified exists in `configs.py`. The
         "tracker_db_dir": "tracker_db/"
     },
     "constants": {
-        "AVAILABLE_PORTS_RANGE": (1024, 65535), 
-        "TRACKER_ADDR": ("localhost", 12345),
+        "AVAILABLE_PORTS_RANGE": [1024, 65535], 
+        "TRACKER_ADDR": ["localhost", 12345],
         "MAX_UDP_SEGMENT_DATA_SIZE": 65527,
         "BUFFER_SIZE": 9216,        
-        "CHUNK_PIECES_SIZE": 9216 - 2000, 
+        "CHUNK_PIECES_SIZE": 7216, 
         "MAX_SPLITTNES_RATE": 3,    
         "NODE_TIME_INTERVAL": 20,        
         "TRACKER_TIME_INTERVAL": 22      
@@ -103,3 +103,4 @@ All the parameters and configs which can be modified exists in `configs.py`. The
     }
 }
 ```
+The usages of these settings and configs are fully described in [`docs/`](https://github.com/mohammadhashemii/BitTorrent-Python/docs).
