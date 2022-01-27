@@ -29,7 +29,7 @@ Table of contents
 ## Introduction to BitTorrent
 
 <p align="center">
-  <img src="https://github.com/mohammadhashemii/BitTorrent-Python/blob/main/docs/bittorrent.jpg" height="200">	
+  <img src="https://github.com/mohammadhashemii/BitTorrent-Python/blob/main/docs/bittorrent.jpg" height="400">	
 </p>
 
 Before you read this section, it must be noted that there is a complete and well-explained introduction to BitTorrent protocol
