@@ -200,7 +200,9 @@ When a file has been sent by a peer to some other node, its uploading frequency 
 When a peer exits the torrent, all the information which is related to this peer must be deleted from the tracker database.
 
 
-<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVOSdUMK0=/?moveToViewport=-729,-320,1498,1112" frameBorder="0" scrolling="no" allowFullScreen></iframe>
+<p align="center">
+  <img src="https://github.com/mohammadhashemii/BitTorrent-Python/blob/main/docs/bittorrent_state_diagram.jpg" height="700">	
+</p>
 
 
 How these steps work and how they are implemented are explained in the following sections.
