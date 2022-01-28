@@ -201,7 +201,7 @@ When a peer exits the torrent, all the information which is related to this peer
 
 
 <p align="center">
-  <img src="https://github.com/mohammadhashemii/BitTorrent-Python/blob/main/docs/bittorrent_state_diagram.jpg" height="700">	
+  <img src="https://github.com/mohammadhashemii/BitTorrent-Python/blob/main/docs/bittorrent_state_diagram.jpg">	
 </p>
 
 
