@@ -7,6 +7,8 @@ import datetime
 import time
 from itertools import groupby
 import mmap
+import warnings
+warnings.filterwarnings("ignore")
 
 # implemented classes
 from configs import CFG, Config
@@ -94,6 +96,7 @@ class Node:
         # 1. asks the node about a file size
         if "size" in msg.keys() and msg["size"] == -1:
             self.tell_file_size(msg=msg, addr=addr)
+        # 2. Wants a chunk of a file
         elif "range" in msg.keys() and msg["chunk"] is None:
             self.send_chunk(filename=msg["filename"],
                             rng=msg["range"],
@@ -224,7 +227,7 @@ class Node:
         log_content = f"The file {filename} which you are about to download, has size of {file_size} bytes"
         log(node_id=self.node_id, content=log_content)
 
-        # 2. Now, we know the size, let's split it equally among peers to download chunks of it from peers
+        # 2. Now, we know the size, let's split it equally among peers to download chunks of it from them
         step = file_size / len(to_be_used_owners)
         chunks_ranges = [(round(step*i), round(step*(i+1))) for i in range(len(to_be_used_owners))]
 
@@ -242,7 +245,7 @@ class Node:
         log_content = "All the chunks of {} has downloaded from neighboring peers. But they must be reassembled!".format(filename)
         log(node_id=self.node_id, content=log_content)
 
-        # 4. Now we have downloaded all the chunks of the file. It's time to reassemble it
+        # 4. Now we have downloaded all the chunks of the file. It's time to sort them.
         sorted_chunks = self.sort_downloaded_chunks(filename=filename)
         log_content = f"All the pieces of the {filename} is now sorted and ready to be reassembled."
         log(node_id=self.node_id, content=log_content)

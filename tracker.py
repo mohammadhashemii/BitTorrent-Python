@@ -4,6 +4,8 @@ from collections import defaultdict
 import json
 import datetime
 import time
+import warnings
+warnings.filterwarnings("ignore")
 
 # implemented classes
 from utils import *
@@ -41,6 +43,7 @@ class Tracker:
         self.file_owners_list[msg['filename']].append(json.dumps(entry))
         self.file_owners_list[msg['filename']] = list(set(self.file_owners_list[msg['filename']]))
         self.send_freq_list[msg['node_id']] += 1
+        self.send_freq_list[msg['node_id']] -= 1
 
         self.save_db_as_json()
 

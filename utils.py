@@ -35,7 +35,7 @@ def free_socket(sock: socket.socket):
 
 def generate_random_port() -> int:
     '''
-    This function generate a new(unused) random port number
+    This function generates a new(unused) random port number
 
     :return: a random integer in range of [1024, 65535]
     '''
@@ -48,7 +48,7 @@ def generate_random_port() -> int:
 
 def parse_command(command: str):
     '''
-    This function parse the input command
+    This function parses the input command
 
     :param command: A string which is the input command.
     :return: Command parts (mode, filename)
