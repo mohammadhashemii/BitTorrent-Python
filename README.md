@@ -18,11 +18,13 @@ Table of contents
       * [Peers](#peers)
       * [Tracker](#tracker)
    * [Implementation Details](#implementation-details)
-      * [`node.py`](#node_py)
-      * [`tracker.py`](#node_py)
+      * [`node.py`](#node.py)
+      * [`tracker.py`](#tracker.py)
       * [`messages/`](#messages)
-         * [`messages.py`](#message_py)
-      * [`utils.py`](#utils_py)
+         * [`messages.py`](#message.py)
+      * [`utils.py`](#utils.py)
+   * [A Sample Output](#a-sample-output)
+   * [Conclusion](#conclusion)
 
 <!--te-->
 
@@ -196,6 +198,9 @@ When a file has been sent by a peer to some other node, its uploading frequency 
 
 **5. EXIT:**
 When a peer exits the torrent, all the information which is related to this peer must be deleted from the tracker database.
+
+
+<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVOSdUMK0=/?moveToViewport=-729,-320,1498,1112" frameBorder="0" scrolling="no" allowFullScreen></iframe>
 
 
 How these steps work and how they are implemented are explained in the following sections.
@@ -533,3 +538,13 @@ def log(node_id: int, content: str, is_tracker=False) -> None:
 ``` 
 
 It is called several times by nodes and the tracker to log the events occurred in the torrent. Each node has an individual log file in `logs/` directory.
+
+## A Sample Output
+For better intuition of how this project works and what kind of output we will get by running the codes, we put a sample output of the code. We created a torrent with 4 peers and a tracker. For some snapshots of the outputs go to [`docs/simulation/`](https://github.com/mohammadhashemii/BitTorrent-Python/tree/main/docs/simulation).
+
+## Conclusion
+Downloading movie, music perhaps game or very large size software is a pretty fun activity using BitTorrent communication protocol which helps in distributing large chunks of data over Internet. Fact is that one third of internet traffic contains BitTorrent data packets, which makes it one of most interesting and trending topics.
+
+In this project we implemented a simple version of BitTorrent in Python language programming. Actually BitTorrent has evolved during the last decades and various version of it has been used. This implementation contains the main modules of every BitTorrent network which is useful for getting know how it works.
+
+Of course, these codes has not tested in large scale cases due to the academical nature it has. We highly appreciate in case you give any kinds of feedback (*i.e.* creating issues, pull requests etc.) if you have found any problem or miss-understanding.
