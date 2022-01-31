@@ -2,7 +2,6 @@
 This is python implementation of the popular peer-to-peer protocol for file distribution. 
 This project, was the course project of Computer Networks course at Shahid Beheshti University in Fall 2021.
 
-This project has done in collaboration with [Koorosh Khavari](https://github.com/NukaColaQuantum666).
 
 
 Table of contents
